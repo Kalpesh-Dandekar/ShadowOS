@@ -1,5 +1,5 @@
-import { RoutePlaceholder } from "../../components/ui/route-placeholder";
+import { ActivityScreen } from "../../features/activity/activity-screen";
 
 export default function ActivityPage() {
-  return <RoutePlaceholder title="Activity" />;
+  return <ActivityScreen />;
 }

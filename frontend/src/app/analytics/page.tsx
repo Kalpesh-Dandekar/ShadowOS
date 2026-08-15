@@ -1,5 +1,5 @@
-import { RoutePlaceholder } from "../../components/ui/route-placeholder";
+import { AnalyticsScreen } from "../../features/analytics/analytics-screen";
 
 export default function AnalyticsPage() {
-  return <RoutePlaceholder title="Analytics" />;
+  return <AnalyticsScreen />;
 }

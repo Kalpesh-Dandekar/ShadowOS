@@ -1,5 +1,5 @@
-import { RoutePlaceholder } from "../../components/ui/route-placeholder";
+import { NotificationsScreen } from "../../features/notifications/notifications-screen";
 
 export default function NotificationsPage() {
-  return <RoutePlaceholder title="Notifications" />;
+  return <NotificationsScreen />;
 }
