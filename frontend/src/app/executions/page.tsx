@@ -1,5 +1,5 @@
-import { RoutePlaceholder } from "../../components/ui/route-placeholder";
+import { ExecutionsScreen } from "../../features/executions/executions-screen";
 
 export default function ExecutionsPage() {
-  return <RoutePlaceholder title="Executions" />;
+  return <ExecutionsScreen />;
 }

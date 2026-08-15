@@ -1,5 +1,5 @@
-import { RoutePlaceholder } from "../../components/ui/route-placeholder";
+import { AuditScreen } from "../../features/audit/audit-screen";
 
 export default function AuditPage() {
-  return <RoutePlaceholder title="Audit" />;
+  return <AuditScreen />;
 }

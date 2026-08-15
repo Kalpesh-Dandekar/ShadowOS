@@ -1,5 +1,5 @@
-import { RoutePlaceholder } from "../../components/ui/route-placeholder";
+import { PoliciesScreen } from "../../features/policies/policies-screen";
 
 export default function PoliciesPage() {
-  return <RoutePlaceholder title="Policies" />;
+  return <PoliciesScreen />;
 }
