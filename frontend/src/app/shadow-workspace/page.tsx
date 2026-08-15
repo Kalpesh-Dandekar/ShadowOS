@@ -1,5 +1,5 @@
-import { RoutePlaceholder } from "../../components/ui/route-placeholder";
+import { ShadowWorkspaceScreen } from "../../features/shadow-workspace/shadow-workspace-screen";
 
 export default function ShadowWorkspacePage() {
-  return <RoutePlaceholder title="Shadow Workspace" />;
+  return <ShadowWorkspaceScreen />;
 }

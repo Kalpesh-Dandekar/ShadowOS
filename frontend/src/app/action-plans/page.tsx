@@ -1,5 +1,5 @@
-import { RoutePlaceholder } from "../../components/ui/route-placeholder";
+import { ActionPlansScreen } from "../../features/action-plans/action-plans-screen";
 
 export default function ActionPlansPage() {
-  return <RoutePlaceholder title="Action Plans" />;
+  return <ActionPlansScreen />;
 }

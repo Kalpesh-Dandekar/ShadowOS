@@ -1,5 +1,5 @@
-import { RoutePlaceholder } from "../../components/ui/route-placeholder";
+import { CommandCenterScreen } from "../../features/command-center/command-center-screen";
 
 export default function CommandCenterPage() {
-  return <RoutePlaceholder title="Command Center" />;
+  return <CommandCenterScreen />;
 }

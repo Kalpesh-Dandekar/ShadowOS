@@ -1,5 +1,5 @@
-import { RoutePlaceholder } from "../../components/ui/route-placeholder";
+import { RiskScreen } from "../../features/risk/risk-screen";
 
 export default function RiskPage() {
-  return <RoutePlaceholder title="Risk" />;
+  return <RiskScreen />;
 }

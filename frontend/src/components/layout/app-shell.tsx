@@ -7,7 +7,7 @@ import { CommandPalette } from "./command-palette";
 import { Sidebar } from "./sidebar";
 import { TopCommandBar } from "./top-command-bar";
 
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({ children, pageTitle = "Governance Overview" }: { children: ReactNode; pageTitle?: string }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -21,7 +21,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, []);
   return <div className="min-h-screen bg-[var(--background)]">
     <Sidebar collapsed={collapsed} mobileOpen={mobileOpen} onCollapse={() => setCollapsed((value) => !value)} onCloseMobile={() => setMobileOpen(false)} />
-    <div className={`transition-[padding] duration-200 ${collapsed ? "lg:pl-[72px]" : "lg:pl-[248px]"}`}><TopCommandBar onMenu={() => setMobileOpen(true)} onPalette={() => setPaletteOpen(true)} />{children}</div>
+    <div className={`transition-[padding] duration-200 ${collapsed ? "lg:pl-[72px]" : "lg:pl-[248px]"}`}><TopCommandBar pageTitle={pageTitle} onMenu={() => setMobileOpen(true)} onPalette={() => setPaletteOpen(true)} />{children}</div>
     <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
   </div>;
 }
