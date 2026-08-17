@@ -3,7 +3,7 @@ export type PolicyStatus = "Enabled" | "Draft" | "Disabled";
 export type PolicyEvaluation = { id: string; name: string; outcome: PolicyOutcome; evidence: string };
 export type PolicyCatalogItem = { id: string; name: string; category: string; scope: string; enforcement: string; status: PolicyStatus; updated: string };
 
-export type ApprovalQueueItem = { requestId: string; action: string; risk: "MEDIUM" | "HIGH" | "CRITICAL"; state: string; assignee: string };
+export type ApprovalQueueItem = { requestId: string; action: string; risk: "MEDIUM" | "HIGH" | "CRITICAL"; state: string; assignee: string; requestedBy: string; age: string };
 export type ApprovalEvidence = { label: string; state: "verified" | "warning"; detail: string };
 
 export type ExecutionStage = { label: string; timestamp: string; state: "completed" | "processing" | "pending" | "failed"; detail: string };

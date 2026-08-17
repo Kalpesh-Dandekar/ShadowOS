@@ -24,5 +24,6 @@ export const executionMetrics: ExecutionMetric[] = [
 
 export const executionIdentity = [
   ["Run ID", "RUN-8F2A-01"], ["Request ID", "REQ-8F2A"], ["Environment", "Production"],
-  ["Plan version", "v1.3"], ["Approved by", "Manager / Kalpesh Dandekar"],
+  ["Plan version", "v1.3"], ["Risk", "72 / HIGH"], ["Approved by", "Manager / Kalpesh Dandekar"],
+  ["Recovery snapshot", "SNP-8F2A-01"],
 ] as const;

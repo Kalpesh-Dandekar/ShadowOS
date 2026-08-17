@@ -4,9 +4,9 @@ import { operationScenario } from "./command-center";
 export { operationScenario };
 
 export const approvalQueue: ApprovalQueueItem[] = [
-  { requestId: "REQ-8F2A", action: "Delete archived invoices", risk: "HIGH", state: "Awaiting your review", assignee: "You" },
-  { requestId: "REQ-71CB", action: "Export customer records", risk: "CRITICAL", state: "Escalated", assignee: "Security Lead" },
-  { requestId: "REQ-9D14", action: "Update access permissions", risk: "MEDIUM", state: "Pending", assignee: "IAM Manager" },
+  { requestId: "REQ-8F2A", action: "Delete archived invoices", risk: "HIGH", state: "Awaiting your review", assignee: "You", requestedBy: "Kalpesh Dandekar", age: "24m" },
+  { requestId: "REQ-71CB", action: "Export customer records", risk: "CRITICAL", state: "Escalated", assignee: "Security Lead", requestedBy: "Support Agent", age: "41m" },
+  { requestId: "REQ-9D14", action: "Update access permissions", risk: "MEDIUM", state: "Pending", assignee: "IAM Manager", requestedBy: "IAM Agent", age: "1h 08m" },
 ];
 
 export const approvalEvidence: ApprovalEvidence[] = [
