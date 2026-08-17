@@ -19,9 +19,9 @@ export function AppShell({ children, pageTitle = "Governance Overview" }: { chil
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
-  return <div className="min-h-screen bg-[var(--background)]">
+  return <div className="min-h-screen bg-[linear-gradient(180deg,rgb(255_255_255/0.012),transparent_26rem)]">
     <Sidebar collapsed={collapsed} mobileOpen={mobileOpen} onCollapse={() => setCollapsed((value) => !value)} onCloseMobile={() => setMobileOpen(false)} />
-    <div className={`transition-[padding] duration-200 ${collapsed ? "lg:pl-[72px]" : "lg:pl-[248px]"}`}><TopCommandBar pageTitle={pageTitle} onMenu={() => setMobileOpen(true)} onPalette={() => setPaletteOpen(true)} />{children}</div>
+    <div className={`transition-[padding] duration-200 ${collapsed ? "lg:pl-[72px]" : "lg:pl-[248px]"}`}><TopCommandBar pageTitle={pageTitle} onMenu={() => setMobileOpen(true)} onPalette={() => setPaletteOpen(true)} /><div className="page-enter">{children}</div></div>
     <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
   </div>;
 }

@@ -17,8 +17,8 @@ const capabilities = [
 
 export function LandingPage() {
   return (
-    <div className="min-h-screen overflow-hidden bg-[var(--background)]">
-      <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-[#08090be8] backdrop-blur-xl">
+    <div className="min-h-screen overflow-hidden">
+      <header className="sticky top-0 z-40 border-b border-white/[0.06] bg-[#08090bf2] backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-[1240px] items-center justify-between px-5 lg:px-8">
           <Brand />
           <nav className="hidden items-center gap-7 text-sm text-[var(--text-secondary)] md:flex" aria-label="Primary navigation">
@@ -38,13 +38,13 @@ export function LandingPage() {
       <main>
         <section id="product" className="relative border-b border-white/[0.06]">
           <div className="technical-grid absolute inset-0 opacity-50 [mask-image:linear-gradient(to_bottom,black,transparent_88%)]" />
-          <div className="relative mx-auto grid max-w-[1240px] gap-12 px-5 py-20 lg:grid-cols-[1fr_0.95fr] lg:px-8 lg:py-28">
+          <div className="relative mx-auto grid max-w-[1240px] gap-14 px-5 py-20 lg:min-h-[680px] lg:grid-cols-[1fr_0.9fr] lg:px-8 lg:py-24">
             <div className="max-w-2xl self-center">
               <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-[var(--text-secondary)]">
                 <span className="size-1.5 rounded-full bg-[var(--safe)] shadow-[0_0_10px_var(--safe)]" />
                 AI execution control plane
               </div>
-              <h1 className="text-balance text-5xl font-semibold leading-[1.04] tracking-[-0.045em] sm:text-6xl lg:text-[72px]">
+              <h1 className="text-balance text-5xl font-semibold leading-[1.02] tracking-[-0.05em] sm:text-6xl lg:text-[68px]">
                 AI agents move fast.<br /><span className="text-[var(--text-muted)]">Governance should move faster.</span>
               </h1>
               <p className="mt-7 max-w-xl text-lg leading-8 text-[var(--text-secondary)]">
@@ -56,14 +56,15 @@ export function LandingPage() {
               </div>
             </div>
 
-            <div id="architecture" className="relative self-center rounded-[14px] border border-white/10 bg-[#0b0d10] p-4 shadow-[var(--shadow-panel)] sm:p-6">
+            <div id="architecture" className="surface-panel relative self-center rounded-[14px] border border-white/10 bg-[#0b0d10f2] p-4 shadow-[var(--shadow-panel)] sm:p-6">
               <div className="mb-5 flex items-center justify-between border-b border-white/[0.07] pb-4">
                 <div><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Control plane / active</p><p className="mt-1 text-sm">Request governance pipeline</p></div>
                 <span className="rounded-full border border-[color:rgb(93_211_158/0.25)] bg-[rgb(93_211_158/0.08)] px-2 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--safe)]">Operational</span>
               </div>
-              <div className="space-y-1.5">
+              <div className="mb-3 grid grid-cols-2 gap-3 border-b border-white/[0.06] pb-4 font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--text-muted)]"><span>REQ-8F2A</span><span className="text-right">Policy set / PROD-04</span></div>
+              <div className="space-y-1">
                 {stages.map((stage, index) => (
-                  <div key={stage} className="group relative flex items-center gap-4 rounded-[7px] border border-transparent px-3 py-2.5 hover:border-white/[0.07] hover:bg-white/[0.025]">
+                  <div key={stage} className="group relative flex items-center gap-4 rounded-[7px] border border-transparent px-3 py-2.5 transition-colors hover:border-white/[0.07] hover:bg-white/[0.025]">
                     <span className="font-mono text-[10px] text-[var(--text-muted)]">{String(index + 1).padStart(2, "0")}</span>
                     <span className={`size-2 rounded-full ${index < 5 ? "bg-[var(--safe)]" : index === 5 ? "bg-[var(--warning)]" : "border border-white/20"}`} />
                     <span className="text-xs font-medium uppercase tracking-[0.14em] text-[var(--text-secondary)]">{stage}</span>
@@ -77,11 +78,11 @@ export function LandingPage() {
           </div>
         </section>
 
-        <section id="platform" className="mx-auto max-w-[1240px] px-5 py-24 lg:px-8">
+        <section id="platform" className="mx-auto max-w-[1240px] px-5 py-24 lg:px-8 lg:py-28">
           <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr]">
             <div><p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--safe)]">Govern before execution</p><h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em] sm:text-4xl">AI output is a proposal.<br />Not permission.</h2><p className="mt-5 max-w-md leading-7 text-[var(--text-secondary)]">ShadowOS inserts a verifiable control layer between machine-generated intent and organizational resources.</p></div>
             <div className="grid border-l border-t border-white/[0.07] sm:grid-cols-2">
-              {capabilities.map(([number, title, copy]) => <div key={number} className="border-b border-r border-white/[0.07] p-5"><span className="font-mono text-[10px] text-[var(--text-muted)]">{number}</span><h3 className="mt-5 text-sm font-medium">{title}</h3><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{copy}</p></div>)}
+              {capabilities.map(([number, title, copy]) => <div key={number} className="group border-b border-r border-white/[0.07] p-5 transition-colors hover:bg-white/[0.018]"><span className="font-mono text-[10px] text-[var(--text-muted)] transition-colors group-hover:text-[var(--safe)]">{number}</span><h3 className="mt-5 text-sm font-medium">{title}</h3><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">{copy}</p></div>)}
             </div>
           </div>
         </section>
@@ -89,7 +90,7 @@ export function LandingPage() {
         <section id="security" className="border-y border-white/[0.06] bg-[var(--surface)]">
           <div className="mx-auto grid max-w-[1240px] gap-8 px-5 py-20 lg:grid-cols-[0.75fr_1.25fr] lg:px-8">
             <div><p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--intelligence)]">Operational example</p><h2 className="mt-4 text-3xl font-semibold tracking-[-0.03em]">From natural language<br />to governed action.</h2></div>
-            <div className="rounded-[12px] border border-white/10 bg-[#0a0c0f] p-5 sm:p-7">
+            <div className="surface-panel rounded-[12px] border border-white/10 bg-[#0a0c0f] p-5 sm:p-7">
               <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">AI request / REQ-8F2A</p>
               <p className="mt-3 text-lg">“Delete archived invoices older than January 2024”</p>
               <div className="mt-7 grid gap-px overflow-hidden rounded-[8px] border border-white/[0.08] bg-white/[0.08] sm:grid-cols-4">

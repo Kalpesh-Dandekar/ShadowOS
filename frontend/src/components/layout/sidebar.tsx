@@ -22,7 +22,7 @@ export function Sidebar({ collapsed, mobileOpen, onCollapse, onCloseMobile }: Si
   return (
     <>
       {mobileOpen && <button className="fixed inset-0 z-40 bg-black/70 lg:hidden" onClick={onCloseMobile} aria-label="Close navigation" />}
-      <aside className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-white/[0.07] bg-[#0a0c0f] transition-[width,transform] duration-200 ${collapsed ? "w-[72px]" : "w-[248px]"} ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
+      <aside className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-white/[0.07] bg-[#090b0e] shadow-[12px_0_40px_rgb(0_0_0/0.08)] transition-[width,transform] duration-200 ${collapsed ? "w-[72px]" : "w-[248px]"} ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
         <div className={`flex h-16 items-center border-b border-white/[0.06] ${collapsed ? "justify-center" : "justify-between px-4"}`}>
           <Brand compact={collapsed} />
           {!collapsed && <button className="hidden p-1.5 text-[var(--text-muted)] hover:text-white lg:block" onClick={onCollapse} aria-label="Collapse sidebar"><ChevronLeft size={17} /></button>}
@@ -33,7 +33,7 @@ export function Sidebar({ collapsed, mobileOpen, onCollapse, onCloseMobile }: Si
             {!collapsed && <p className="mb-1.5 px-2 text-[9px] font-medium uppercase tracking-[0.16em] text-[var(--text-muted)]">{group.label}</p>}
             <div className="space-y-0.5">{group.items.map(([label, href, Icon]) => {
               const active = pathname === href;
-              return <Link key={href} href={href} title={collapsed ? label : undefined} onClick={onCloseMobile} className={`relative flex h-9 items-center rounded-[6px] text-sm transition-colors ${collapsed ? "justify-center" : "gap-3 px-2.5"} ${active ? "bg-white/[0.055] text-white" : "text-[var(--text-muted)] hover:bg-white/[0.035] hover:text-[var(--text-secondary)]"}`}>
+              return <Link key={href} href={href} title={collapsed ? label : undefined} onClick={onCloseMobile} className={`relative flex h-9 items-center rounded-[6px] text-[13px] transition-colors ${collapsed ? "justify-center" : "gap-3 px-2.5"} ${active ? "bg-white/[0.06] text-white shadow-[inset_0_1px_rgb(255_255_255/0.025)]" : "text-[var(--text-muted)] hover:bg-white/[0.035] hover:text-[var(--text-secondary)]"}`}>
                 {active && <span className="absolute left-0 h-4 w-0.5 rounded-full bg-[var(--info)]" />}<Icon size={16} strokeWidth={1.8} />{!collapsed && <span>{label}</span>}
               </Link>;
             })}</div>
