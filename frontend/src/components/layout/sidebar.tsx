@@ -40,7 +40,7 @@ export function Sidebar({ collapsed, mobileOpen, onCollapse, onCloseMobile }: Si
           </div>)}
         </nav>
         <div className="border-t border-white/[0.06] p-3">
-          <div className={`mb-3 flex items-center ${collapsed ? "justify-center" : "gap-2"}`}><span className="size-1.5 rounded-full bg-[var(--safe)] shadow-[0_0_8px_var(--safe)]" />{!collapsed && <span className="text-[10px] text-[var(--text-muted)]">System Operational</span>}</div>
+          <div className={`mb-3 flex items-center ${collapsed ? "justify-center" : "gap-2"}`}><span className="size-1.5 rounded-full bg-[var(--info)] shadow-[0_0_8px_var(--info)]" />{!collapsed && <span className="text-[10px] text-[var(--text-muted)]">Preview environment</span>}</div>
           <div className={`flex items-center ${collapsed ? "justify-center" : "gap-3"}`}><span className="grid size-8 shrink-0 place-items-center rounded-[7px] bg-white/[0.07] text-xs font-semibold">KD</span>{!collapsed && <div className="min-w-0"><p className="truncate text-xs font-medium">Kalpesh Dandekar</p><p className="text-[10px] text-[var(--text-muted)]">Administrator</p></div>}</div>
         </div>
         {collapsed && <button onClick={onCollapse} className="absolute -right-3 top-[27px] hidden size-6 place-items-center rounded-full border border-white/10 bg-[var(--surface-elevated)] text-[var(--text-muted)] hover:text-white lg:grid" aria-label="Expand sidebar"><ChevronLeft size={13} className="rotate-180" /></button>}

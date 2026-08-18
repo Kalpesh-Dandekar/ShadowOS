@@ -61,7 +61,7 @@ export function LandingPage() {
                 <div><p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Control plane / active</p><p className="mt-1 text-sm">Request governance pipeline</p></div>
                 <span className="rounded-full border border-[color:rgb(93_211_158/0.25)] bg-[rgb(93_211_158/0.08)] px-2 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--safe)]">Operational</span>
               </div>
-              <div className="mb-3 grid grid-cols-2 gap-3 border-b border-white/[0.06] pb-4 font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--text-muted)]"><span>REQ-8F2A</span><span className="text-right">Policy set / PROD-04</span></div>
+              <div className="mb-3 grid grid-cols-2 gap-3 border-b border-white/[0.06] pb-4 font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--text-muted)]"><span>REQ-8F2A</span><span className="text-right">Policy / POL-BULK-DELETE-04</span></div>
               <div className="space-y-1">
                 {stages.map((stage, index) => (
                   <div key={stage} className="group relative flex items-center gap-4 rounded-[7px] border border-transparent px-3 py-2.5 transition-colors hover:border-white/[0.07] hover:bg-white/[0.025]">
@@ -94,7 +94,7 @@ export function LandingPage() {
               <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">AI request / REQ-8F2A</p>
               <p className="mt-3 text-lg">“Delete archived invoices older than January 2024”</p>
               <div className="mt-7 grid gap-px overflow-hidden rounded-[8px] border border-white/[0.08] bg-white/[0.08] sm:grid-cols-4">
-                {[ ["Simulation", "1,284 records", "text-white"], ["Risk", "High · 78/100", "text-[var(--high-risk)]"], ["Policy", "Approval required", "text-[var(--warning)]"], ["Execution", "Blocked safely", "text-[var(--critical)]"] ].map(([label, value, color]) => <div key={label} className="bg-[var(--surface)] p-4"><p className="text-[10px] uppercase tracking-wider text-[var(--text-muted)]">{label}</p><p className={`mt-2 text-sm font-medium ${color}`}>{value}</p></div>)}
+                {[ ["Simulation", "143 resources", "text-white"], ["Risk", "High · 72/100", "text-[var(--high-risk)]"], ["Policy", "Approval required", "text-[var(--warning)]"], ["Execution", "Blocked safely", "text-[var(--critical)]"] ].map(([label, value, color]) => <div key={label} className="bg-[var(--surface)] p-4"><p className="text-[10px] uppercase tracking-wider text-[var(--text-muted)]">{label}</p><p className={`mt-2 text-sm font-medium ${color}`}>{value}</p></div>)}
               </div>
               <div className="mt-5 flex items-start gap-3 text-sm text-[var(--text-secondary)]"><ShieldCheck className="mt-0.5 shrink-0 text-[var(--safe)]" size={17} /><span>Destructive action held before production impact. Full decision evidence retained.</span></div>
             </div>

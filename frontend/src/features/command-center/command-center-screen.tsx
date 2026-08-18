@@ -11,7 +11,7 @@ import { commandStages, operationScenario, planActions } from "../../mock/comman
 const actionTone = { SEARCH: "text-[var(--info)] border-[rgb(106_168_255/0.25)]", FILTER: "text-[var(--intelligence)] border-[rgb(167_139_250/0.25)]", DELETE: "text-[var(--critical)] border-[rgb(239_98_98/0.25)]" };
 
 export function CommandCenterScreen() {
-  const [request, setRequest] = useState(`${operationScenario.request}.`);
+  const [request, setRequest] = useState(operationScenario.request);
   return <AppShell pageTitle="AI Command Center"><main className="mx-auto max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
     <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end"><div><p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--intelligence)]">AI operations / intake</p><h1 className="mt-2 text-3xl font-semibold tracking-[-0.035em]">AI Command Center</h1><p className="mt-2 max-w-2xl text-sm text-[var(--text-secondary)]">Convert natural-language operations into inspectable, governed execution plans before production access is considered.</p></div><div className="flex gap-2"><button className="flex items-center gap-2 rounded-[7px] border border-white/[0.08] px-3 py-2 text-xs text-[var(--text-secondary)] hover:bg-white/[0.04]"><FileClock size={14} />History</button><button onClick={() => setRequest("")} className="flex items-center gap-2 rounded-[7px] bg-white px-3 py-2 text-xs font-medium text-black hover:bg-zinc-200"><Plus size={14} />New request</button></div></div>
 

@@ -8,10 +8,10 @@ export const governanceMetrics: GovernanceMetric[] = [
 ];
 
 export const pipelineStages: PipelineStage[] = [
-  { label: "Plan", state: "completed", detail: "12 actions" },
-  { label: "Simulate", state: "completed", detail: "1,284 records" },
-  { label: "Risk", state: "warning", detail: "High · 78" },
-  { label: "Policy", state: "completed", detail: "4/4 passed" },
+  { label: "Plan", state: "completed", detail: "3 actions" },
+  { label: "Simulate", state: "completed", detail: "143 resources" },
+  { label: "Risk", state: "warning", detail: "High · 72" },
+  { label: "Policy", state: "completed", detail: "3 pass · 1 gate" },
   { label: "Approve", state: "awaiting approval", detail: "Operator review" },
   { label: "Execute", state: "idle", detail: "Held" },
   { label: "Audit", state: "idle", detail: "Queued" },
