@@ -1,6 +1,7 @@
 import { app } from "./app.js";
 import { connectDatabase, disconnectDatabase } from "./config/database.js";
 import { environment } from "./config/environment.js";
+import { assertAuthConfiguration } from "./utils/auth/token.js";
 
 let server;
 let shuttingDown = false;
@@ -20,6 +21,7 @@ async function shutdown(signal) {
 }
 
 async function startServer() {
+  assertAuthConfiguration();
   await connectDatabase();
   server = app.listen(environment.apiPort, () => {
     console.log(`ShadowOS API listening on port ${environment.apiPort}`);
