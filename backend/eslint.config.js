@@ -4,7 +4,7 @@ import globals from "globals";
 export default [
   eslint.configs.recommended,
   {
-    files: ["src/**/*.js"],
+    files: ["src/**/*.js", "prisma/**/*.js", "prisma.config.js"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
