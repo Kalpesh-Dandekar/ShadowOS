@@ -4,20 +4,22 @@ import { FileClock, ListChecks, Play, Search, ShieldAlert, TerminalSquare, X } f
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import type { Role } from "../../types/auth";
+
 const commands = [
-  { label: "New AI Request", href: "/command-center", icon: TerminalSquare },
-  { label: "Open Risk Engine", href: "/risk", icon: ShieldAlert },
-  { label: "View Pending Approvals", href: "/approvals", icon: ListChecks },
-  { label: "Search Audit Logs", href: "/audit", icon: FileClock },
-  { label: "Open Policies", href: "/policies", icon: Search },
-  { label: "View Executions", href: "/executions", icon: Play },
+  { label: "New AI Request", href: "/command-center", icon: TerminalSquare, roles: ["EMPLOYEE", "MANAGER", "ADMIN"] },
+  { label: "Open Risk Engine", href: "/risk", icon: ShieldAlert, roles: ["EMPLOYEE", "MANAGER", "ADMIN"] },
+  { label: "View Pending Approvals", href: "/approvals", icon: ListChecks, roles: ["MANAGER", "ADMIN"] },
+  { label: "Search Audit Logs", href: "/audit", icon: FileClock, roles: ["ADMIN"] },
+  { label: "Open Policies", href: "/policies", icon: Search, roles: ["ADMIN"] },
+  { label: "View Executions", href: "/executions", icon: Play, roles: ["EMPLOYEE", "MANAGER", "ADMIN"] },
 ];
 
-export function CommandPalette({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function CommandPalette({ role, open, onClose }: { role: Role; open: boolean; onClose: () => void }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   if (!open) return null;
-  const filtered = commands.filter((command) => command.label.toLowerCase().includes(query.toLowerCase()));
+  const filtered = commands.filter((command) => command.roles.includes(role) && command.label.toLowerCase().includes(query.toLowerCase()));
   function navigate(href: string) { onClose(); router.push(href); }
   return <div className="fixed inset-0 z-[70] flex justify-center bg-black/70 px-4 pt-[15vh] backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Command palette" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
     <div className="h-fit w-full max-w-xl overflow-hidden rounded-[12px] border border-white/10 bg-[#101318] shadow-2xl">

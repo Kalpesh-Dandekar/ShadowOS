@@ -1,10 +1,12 @@
 "use client";
 
 import { Bell, Bot, Building2, ChevronRight, CircleAlert, Code2, LockKeyhole, Plug, ShieldAlert, SlidersHorizontal, UserRound } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { AppShell } from "../../components/layout/app-shell";
-import { aiSettings, approvalRules, futureIntegrations, notificationSettings, organizationSettings, profileSettings, riskThresholds, securitySettings, settingsSections } from "../../mock/settings";
+import { useAuth } from "../../hooks/use-auth";
+import { roleLabel } from "../../lib/navigation";
+import { aiSettings, approvalRules, futureIntegrations, notificationSettings, organizationSettings, riskThresholds, securitySettings, settingsSections as allSettingsSections } from "../../mock/settings";
 import type { SettingsSection } from "../../types/insights";
 
 const sectionIcon = { Organization: Building2, Profile: UserRound, "AI Configuration": Bot, Security: LockKeyhole, "Risk Thresholds": ShieldAlert, "Approval Rules": SlidersHorizontal, Notifications: Bell, Integrations: Plug };
@@ -12,10 +14,14 @@ const sectionIcon = { Organization: Building2, Profile: UserRound, "AI Configura
 function SettingRows({ rows }: { rows: ReadonlyArray<readonly [string, string]> }) { return <dl className="divide-y divide-white/[0.055]">{rows.map(([label,value]) => <div key={label} className="grid gap-2 py-4 transition-colors hover:bg-white/[0.012] sm:grid-cols-[1fr_1fr] sm:items-center"><dt className="text-xs text-[var(--text-secondary)]">{label}</dt><dd className={`font-mono text-[10px] sm:text-right ${label === "Direct LLM Execution" ? "font-semibold text-[var(--critical)]" : value.includes("Enabled") ? "text-[var(--safe)]" : "text-[var(--text-muted)]"}`}>{value}</dd></div>)}</dl>; }
 
 export function SettingsScreen() {
-  const [section, setSection] = useState<SettingsSection>("Organization");
+  const { user } = useAuth();
+  const [selectedSection, setSection] = useState<SettingsSection>("Profile");
   const [toggles, setToggles] = useState<Record<string, boolean>>(Object.fromEntries(notificationSettings.map((item) => [item, true])));
+  const settingsSections = useMemo(() => user?.role === "ADMIN" ? allSettingsSections : allSettingsSections.filter((item) => item === "Profile" || item === "Notifications"), [user?.role]);
+  const profileSettings = user ? [["Name", user.name], ["Role", `${roleLabel(user.role)} Â· read-only`], ["Email", user.email]] as const : [];
+  const section = settingsSections.includes(selectedSection) ? selectedSection : "Profile";
   return <AppShell pageTitle="Settings"><main className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8"><div><p className="text-[10px] font-medium uppercase tracking-[0.18em] text-[var(--info)]">Control plane configuration</p><h1 className="mt-2 text-3xl font-semibold tracking-[-0.035em]">Settings</h1><p className="mt-2 max-w-2xl text-sm text-[var(--text-secondary)]">Configure organization-level ShadowOS preferences, governance defaults, and interface settings.</p></div>
-    <div className="mt-7 grid gap-4 lg:grid-cols-[240px_1fr]"><nav aria-label="Settings sections" className="surface-panel h-fit overflow-hidden rounded-[10px] border border-white/[0.08] bg-[var(--surface)] p-2 lg:sticky lg:top-20">{settingsSections.map((item, index) => { const Icon = sectionIcon[item]; const active = section === item; return <button key={item} onClick={() => setSection(item)} aria-current={active ? "page" : undefined} className={`relative flex w-full items-center gap-3 rounded-[6px] px-3 py-2.5 text-left text-xs transition-colors ${active ? "bg-white/[0.07] text-white shadow-[inset_0_1px_rgb(255_255_255/0.025)]" : "text-[var(--text-muted)] hover:bg-white/[0.03] hover:text-[var(--text-secondary)]"}`}>{active && <span className="absolute left-0 h-4 w-0.5 rounded-full bg-[var(--info)]" />}<span className="font-mono text-[8px] text-[var(--text-muted)]">0{index + 1}</span><Icon size={15} /><span>{item}</span><ChevronRight size={12} className="ml-auto" /></button>})}<p className="border-t border-white/[0.05] px-3 pb-2 pt-4 text-[8px] leading-4 text-[var(--text-muted)]">Administrator preview · settings are not persisted.</p></nav>
+    <div className="mt-7 grid gap-4 lg:grid-cols-[240px_1fr]"><nav aria-label="Settings sections" className="surface-panel h-fit overflow-hidden rounded-[10px] border border-white/[0.08] bg-[var(--surface)] p-2 lg:sticky lg:top-20">{settingsSections.map((item, index) => { const Icon = sectionIcon[item]; const active = section === item; return <button key={item} onClick={() => setSection(item)} aria-current={active ? "page" : undefined} className={`relative flex w-full items-center gap-3 rounded-[6px] px-3 py-2.5 text-left text-xs transition-colors ${active ? "bg-white/[0.07] text-white shadow-[inset_0_1px_rgb(255_255_255/0.025)]" : "text-[var(--text-muted)] hover:bg-white/[0.03] hover:text-[var(--text-secondary)]"}`}>{active && <span className="absolute left-0 h-4 w-0.5 rounded-full bg-[var(--info)]" />}<span className="font-mono text-[8px] text-[var(--text-muted)]">0{index + 1}</span><Icon size={15} /><span>{item}</span><ChevronRight size={12} className="ml-auto" /></button>})}<p className="border-t border-white/[0.05] px-3 pb-2 pt-4 text-[8px] leading-4 text-[var(--text-muted)]">Authenticated identity · settings are not persisted.</p></nav>
       <section className="surface-panel rounded-[12px] border border-white/[0.08] bg-[var(--surface)]"><div className="flex items-center justify-between gap-3 border-b border-white/[0.07] px-4 py-4 sm:px-6"><div><h2 className="text-lg font-semibold">{section}</h2><p className="mt-1 text-[10px] text-[var(--text-muted)]">Phase 1 configuration preview · read-only unless noted</p></div><span className="hidden font-mono text-[8px] uppercase tracking-wider text-[var(--text-muted)] sm:block">Organization / Administrator</span></div><div className="px-4 sm:px-6">
         {section === "Organization" && <SettingRows rows={organizationSettings} />}
         {section === "Profile" && <SettingRows rows={profileSettings} />}
