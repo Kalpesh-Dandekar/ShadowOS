@@ -17,13 +17,38 @@ enum UserStatus {
   DISABLED
 }
 
+enum RoleRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
-  id           String     @id @default(uuid()) @db.Uuid
-  name         String
-  email        String     @unique
-  passwordHash String
-  role         Role       @default(EMPLOYEE)
-  status       UserStatus @default(ACTIVE)
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  id                    String        @id @default(uuid()) @db.Uuid
+  name                  String
+  email                 String        @unique
+  passwordHash          String
+  role                  Role          @default(EMPLOYEE)
+  status                UserStatus    @default(ACTIVE)
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  submittedRoleRequests RoleRequest[] @relation("SubmittedRoleRequests")
+  reviewedRoleRequests  RoleRequest[] @relation("ReviewedRoleRequests")
+}
+
+model RoleRequest {
+  id            String            @id @default(uuid()) @db.Uuid
+  userId        String            @db.Uuid
+  requestedRole Role
+  status        RoleRequestStatus @default(PENDING)
+  reviewedById  String?           @db.Uuid
+  reviewComment String?
+  createdAt     DateTime          @default(now())
+  reviewedAt    DateTime?
+  updatedAt     DateTime          @updatedAt
+  user          User              @relation("SubmittedRoleRequests", fields: [userId], references: [id], onDelete: Cascade)
+  reviewedBy    User?             @relation("ReviewedRoleRequests", fields: [reviewedById], references: [id], onDelete: SetNull)
+
+  @@index([status, requestedRole])
+  @@index([userId, status])
 }

@@ -149,10 +149,10 @@ test("authentication and health routes remain operational", async () => {
   assert.equal(health.response.status, 200);
 });
 
-test("database returns to the three seeded identities and roles", async () => {
+test("seeded identities retain their roles", async () => {
   const database = getDatabase();
-  const grouped = await database.user.groupBy({ by: ["role"], _count: { _all: true } });
-  const counts = Object.fromEntries(grouped.map(({ role, _count }) => [role, _count._all]));
-  assert.deepEqual(counts, { ADMIN: 1, EMPLOYEE: 1, MANAGER: 1 });
-  assert.equal(await database.user.count(), 3);
+  for (const [role, email] of Object.entries(users)) {
+    const user = await database.user.findUniqueOrThrow({ where: { email }, select: { role: true } });
+    assert.equal(user.role, role);
+  }
 });

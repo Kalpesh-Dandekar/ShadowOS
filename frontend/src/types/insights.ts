@@ -4,4 +4,4 @@ export type ActivityCategory = "AI Operations" | "Governance" | "Approvals" | "E
 export type ActivityItem = { id: string; category: ActivityCategory; title: string; description: string; actor: string; requestId?: string; timestamp: string; tone: "safe" | "warning" | "critical" | "info" | "intelligence" };
 export type NotificationCategory = "Approvals" | "Risk" | "Execution" | "Policy" | "System";
 export type NotificationItem = { id: string; category: NotificationCategory; title: string; description: string; reference: string; metadata: string; timestamp: string; priority: "normal" | "high" | "critical"; unread: boolean; href?: string };
-export type SettingsSection = "Organization" | "Profile" | "AI Configuration" | "Security" | "Risk Thresholds" | "Approval Rules" | "Notifications" | "Integrations";
+export type SettingsSection = "Organization" | "Profile" | "AI Configuration" | "Security" | "Access & Roles" | "Risk Thresholds" | "Approval Rules" | "Notifications" | "Integrations";

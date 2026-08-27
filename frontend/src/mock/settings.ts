@@ -1,6 +1,6 @@
 import type { SettingsSection } from "../types/insights";
 
-export const settingsSections: SettingsSection[] = ["Organization", "Profile", "AI Configuration", "Security", "Risk Thresholds", "Approval Rules", "Notifications", "Integrations"];
+export const settingsSections: SettingsSection[] = ["Organization", "Profile", "AI Configuration", "Security", "Access & Roles", "Risk Thresholds", "Approval Rules", "Notifications", "Integrations"];
 export const organizationSettings = [["Organization Name", "ShadowOS Demo Organization"], ["Default Environment", "Production"], ["Timezone", "Asia/Kolkata"], ["Audit Retention", "365 days"]] as const;
 export const aiSettings = [["Primary Provider", "Google Gemini · planned"], ["Planner Mode", "Structured Output"], ["Schema Validation", "Enabled"], ["Direct LLM Execution", "DISABLED"]] as const;
 export const securitySettings = [["Require approval for destructive production actions", "Enabled"], ["Session timeout", "30 minutes"], ["Enforce role-based access", "Enabled"], ["Require recovery snapshot when supported", "Enabled"]] as const;
