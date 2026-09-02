@@ -11,6 +11,7 @@
     "lint": "eslint src tests prisma prisma.config.js",
     "test:rbac": "node --test --test-concurrency=1 tests/rbac.integration.test.js",
     "test:role-enrollment": "node --test --test-concurrency=1 tests/role-enrollment.integration.test.js",
+    "test:requests": "node --test --test-concurrency=1 tests/request.integration.test.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "prisma db seed",
