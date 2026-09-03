@@ -14,6 +14,7 @@
     "test:requests": "node --test --test-concurrency=1 tests/request.integration.test.js",
     "test:planner": "node --test --test-concurrency=1 tests/planner.integration.test.js",
     "test:simulation": "node --test --test-concurrency=1 tests/simulation.integration.test.js",
+    "test:risk": "node --test --test-concurrency=1 tests/risk.integration.test.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "prisma db seed",

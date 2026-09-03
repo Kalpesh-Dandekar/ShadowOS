@@ -77,6 +77,19 @@ enum SimulationEffectType {
   DELETE_RESOURCE
 }
 
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum RiskSourceType {
+  REQUEST
+  PLAN
+  SIMULATION
+}
+
 model User {
   id                    String        @id @default(uuid()) @db.Uuid
   name                  String
@@ -152,6 +165,37 @@ model SimulationRun {
   updatedAt              DateTime               @updatedAt
   plan                   ExecutionPlan          @relation(fields: [planId], references: [id], onDelete: Cascade)
   effects                SimulationEffect[]
+  riskAssessment         RiskAssessment?
+}
+
+model RiskAssessment {
+  id              String        @id @default(uuid()) @db.Uuid
+  simulationRunId String        @unique @db.Uuid
+  score           Int
+  level           RiskLevel
+  summary         String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  simulationRun   SimulationRun @relation(fields: [simulationRunId], references: [id], onDelete: Cascade)
+  factors         RiskFactor[]
+}
+
+model RiskFactor {
+  id               String         @id @default(uuid()) @db.Uuid
+  riskAssessmentId String         @db.Uuid
+  key              String
+  label            String
+  observedValue    Json
+  normalizedScore  Int
+  weight           Float
+  contribution     Float
+  explanation      String
+  sourceType       RiskSourceType
+  createdAt        DateTime       @default(now())
+  riskAssessment   RiskAssessment @relation(fields: [riskAssessmentId], references: [id], onDelete: Cascade)
+
+  @@unique([riskAssessmentId, key])
+  @@index([riskAssessmentId])
 }
 
 model SimulationEffect {
