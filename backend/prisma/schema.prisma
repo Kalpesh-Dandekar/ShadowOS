@@ -37,6 +37,32 @@ enum Environment {
   PRODUCTION
 }
 
+enum PlannerProviderType {
+  SIMULATION
+}
+
+enum PlanStatus {
+  GENERATED
+  INVALID
+}
+
+enum PlanActionType {
+  QUERY_RESOURCE
+  VALIDATE_SCOPE
+  CREATE_RESOURCE
+  UPDATE_RESOURCE
+  ARCHIVE_RESOURCE
+  DELETE_RESOURCE
+}
+
+enum PlanResourceType {
+  INVOICE
+  CUSTOMER_ACCOUNT
+  USER_ACCOUNT
+  FILE
+  RECORD
+}
+
 model User {
   id                    String        @id @default(uuid()) @db.Uuid
   name                  String
@@ -52,16 +78,48 @@ model User {
 }
 
 model Request {
-  id          String        @id @default(uuid()) @db.Uuid
-  userId      String        @db.Uuid
-  prompt      String
-  status      RequestStatus @default(SUBMITTED)
-  environment Environment
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id            String         @id @default(uuid()) @db.Uuid
+  userId        String         @db.Uuid
+  prompt        String
+  status        RequestStatus  @default(SUBMITTED)
+  environment   Environment
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  executionPlan ExecutionPlan?
 
   @@index([userId, createdAt])
+}
+
+model ExecutionPlan {
+  id        String              @id @default(uuid()) @db.Uuid
+  requestId String              @unique @db.Uuid
+  provider  PlannerProviderType
+  summary   String
+  status    PlanStatus          @default(GENERATED)
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  request   Request             @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  actions   PlanAction[]
+}
+
+model PlanAction {
+  id             String           @id @default(uuid()) @db.Uuid
+  planId         String           @db.Uuid
+  position       Int
+  type           PlanActionType
+  resourceType   PlanResourceType
+  description    String
+  target         Json
+  destructive    Boolean          @default(false)
+  reversible     Boolean          @default(true)
+  estimatedScope String?
+  reason         String
+  createdAt      DateTime         @default(now())
+  plan           ExecutionPlan    @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@unique([planId, position])
+  @@index([planId])
 }
 
 model RoleRequest {
