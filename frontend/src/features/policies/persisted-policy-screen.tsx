@@ -1,0 +1,28 @@
+"use client";
+
+import { AlertCircle, FileCheck2, LoaderCircle, Scale } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { AppShell } from "../../components/layout/app-shell";
+import { useAuth } from "../../hooks/use-auth";
+import { ApiError } from "../../services/api-client";
+import { getPolicyEvaluation } from "../../services/policy-service";
+import { getRequest } from "../../services/request-service";
+import { getRisk } from "../../services/risk-service";
+import type { PolicyDecision, PolicyEvaluation } from "../../types/policy";
+import type { ShadowRequest } from "../../types/request";
+import type { RiskAssessment } from "../../types/risk";
+
+const decisionStyle: Record<PolicyDecision, string> = { ALLOW: "text-[var(--safe)] border-[rgb(93_211_158/0.3)]", REQUIRE_APPROVAL: "text-[var(--warning)] border-[rgb(231_183_91/0.3)]", BLOCK: "text-[var(--critical)] border-[rgb(239_98_98/0.3)]" };
+const display = (value: PolicyDecision) => value.replaceAll("_", " ");
+
+export function PersistedPolicyScreen({ requestId }: { requestId: string }) {
+  const { refreshSession } = useAuth(); const [request, setRequest] = useState<ShadowRequest | null>(null); const [risk, setRisk] = useState<RiskAssessment | null>(null); const [evaluation, setEvaluation] = useState<PolicyEvaluation | null>(null); const [error, setError] = useState("");
+  useEffect(() => { let active = true; Promise.all([getRequest(requestId), getRisk(requestId), getPolicyEvaluation(requestId)]).then(([nextRequest, nextRisk, nextEvaluation]) => { if (active) { setRequest(nextRequest); setRisk(nextRisk); setEvaluation(nextEvaluation); } }).catch((caught: unknown) => { if (!active) return; if (caught instanceof ApiError && caught.status === 401) void refreshSession(); setError(caught instanceof ApiError ? caught.message : "Unable to load this policy evaluation."); }); return () => { active = false; }; }, [refreshSession, requestId]);
+  if (error) return <AppShell pageTitle="Policy Engine"><main className="mx-auto max-w-4xl px-4 py-12"><div className="surface-panel rounded-[12px] border border-white/[0.08] p-6"><AlertCircle className="text-[var(--warning)]" /><h1 className="mt-4 text-xl font-semibold">Policy evaluation unavailable</h1><p className="mt-2 text-sm text-[var(--text-secondary)]">{error}</p><Link href={`/risk/${requestId}`} className="mt-6 inline-flex rounded-[7px] bg-white px-4 py-2 text-xs font-medium text-black">Return to Risk Engine</Link></div></main></AppShell>;
+  if (!request || !risk || !evaluation) return <AppShell pageTitle="Policy Engine"><main className="grid min-h-[60vh] place-items-center"><LoaderCircle className="animate-spin text-[var(--intelligence)]" /></main></AppShell>;
+  return <AppShell pageTitle="Policy Engine"><main className="mx-auto max-w-[1450px] px-4 py-6 sm:px-6 lg:px-8 lg:py-8"><div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end"><div><p className="text-[10px] uppercase tracking-[0.18em] text-[var(--safe)]">Deterministic governance gate</p><h1 className="mt-2 text-3xl font-semibold">Policy Evaluation</h1><p className="mt-2 max-w-2xl text-sm text-[var(--text-secondary)]">Persisted rules evaluated against request, plan, simulation, and risk evidence.</p></div><div className={`rounded-[10px] border px-5 py-3 text-lg font-semibold ${decisionStyle[evaluation.decision]}`}>{display(evaluation.decision)}</div></div>
+    <section className="surface-panel mt-7 rounded-[12px] border border-white/[0.08] p-5"><div className="flex gap-3"><FileCheck2 className="text-[var(--safe)]" size={19} /><div><p className="text-sm font-medium">{evaluation.summary}</p><p className="mt-2 text-[10px] text-[var(--text-secondary)]">Policy only: no approval request or execution was created.</p></div></div><dl className="mt-5 grid gap-px overflow-hidden rounded-[8px] border border-white/[0.07] bg-white/[0.07] sm:grid-cols-4">{[["Risk", `${risk.score} / ${risk.level}`], ["Rules evaluated", evaluation.evaluatedRuleCount], ["Rules matched", evaluation.matchedRuleCount], ["Environment", request.environment]].map(([label,value]) => <div className="bg-[var(--surface)] p-3" key={label}><dt className="text-[8px] uppercase text-[var(--text-muted)]">{label}</dt><dd className="mt-2 font-mono text-xs">{value}</dd></div>)}</dl></section>
+    <section className="mt-5"><div className="flex items-center gap-2"><Scale size={16} className="text-[var(--intelligence)]" /><h2 className="text-sm font-medium">Matched policy rules</h2></div><div className="mt-4 space-y-3">{evaluation.matches.map((match) => <article key={match.id} className="surface-panel rounded-[10px] border border-white/[0.08] p-5"><div className="flex flex-wrap justify-between gap-3"><div><h3 className="text-sm font-medium">{match.ruleName}</h3><p className="mt-1 font-mono text-[9px] text-[var(--text-muted)]">{match.ruleKey} · PRIORITY {match.priority}</p></div><span className={`text-[10px] font-semibold ${decisionStyle[match.decision].split(" ")[0]}`}>{display(match.decision)}</span></div><p className="mt-4 text-xs text-[var(--text-secondary)]">{match.explanation}</p><pre className="mt-3 overflow-x-auto rounded-[7px] bg-black/25 p-3 text-[9px] text-[var(--text-muted)]">{JSON.stringify(match.observedFacts, null, 2)}</pre></article>)}</div></section>
+    <div className="mt-5 rounded-[10px] border border-[rgb(167_139_250/0.2)] bg-[rgb(167_139_250/0.04)] p-4 text-[10px] text-[var(--text-secondary)]">Policy decisions use deterministic matched-rule precedence: BLOCK &gt; REQUIRE_APPROVAL &gt; ALLOW. No AI is involved.</div></main></AppShell>;
+}

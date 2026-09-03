@@ -90,6 +90,12 @@ enum RiskSourceType {
   SIMULATION
 }
 
+enum PolicyDecision {
+  ALLOW
+  REQUIRE_APPROVAL
+  BLOCK
+}
+
 model User {
   id                    String        @id @default(uuid()) @db.Uuid
   name                  String
@@ -169,15 +175,45 @@ model SimulationRun {
 }
 
 model RiskAssessment {
-  id              String        @id @default(uuid()) @db.Uuid
-  simulationRunId String        @unique @db.Uuid
-  score           Int
-  level           RiskLevel
-  summary         String
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  simulationRun   SimulationRun @relation(fields: [simulationRunId], references: [id], onDelete: Cascade)
-  factors         RiskFactor[]
+  id               String            @id @default(uuid()) @db.Uuid
+  simulationRunId  String            @unique @db.Uuid
+  score            Int
+  level            RiskLevel
+  summary          String
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  simulationRun    SimulationRun     @relation(fields: [simulationRunId], references: [id], onDelete: Cascade)
+  factors          RiskFactor[]
+  policyEvaluation PolicyEvaluation?
+}
+
+model PolicyEvaluation {
+  id                 String         @id @default(uuid()) @db.Uuid
+  riskAssessmentId   String         @unique @db.Uuid
+  decision           PolicyDecision
+  summary            String
+  evaluatedRuleCount Int
+  matchedRuleCount   Int
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  riskAssessment     RiskAssessment @relation(fields: [riskAssessmentId], references: [id], onDelete: Cascade)
+  matches            PolicyMatch[]
+}
+
+model PolicyMatch {
+  id                 String           @id @default(uuid()) @db.Uuid
+  policyEvaluationId String           @db.Uuid
+  ruleKey            String
+  ruleName           String
+  decision           PolicyDecision
+  priority           Int
+  observedFacts      Json
+  explanation        String
+  createdAt          DateTime         @default(now())
+  policyEvaluation   PolicyEvaluation @relation(fields: [policyEvaluationId], references: [id], onDelete: Cascade)
+
+  @@unique([policyEvaluationId, ruleKey])
+  @@index([policyEvaluationId])
 }
 
 model RiskFactor {
