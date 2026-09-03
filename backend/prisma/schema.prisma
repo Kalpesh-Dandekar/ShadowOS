@@ -63,6 +63,20 @@ enum PlanResourceType {
   RECORD
 }
 
+enum SimulationProviderType {
+  SYNTHETIC
+}
+
+enum SimulationStatus {
+  COMPLETED
+  FAILED
+}
+
+enum SimulationEffectType {
+  ARCHIVE_RESOURCE
+  DELETE_RESOURCE
+}
+
 model User {
   id                    String        @id @default(uuid()) @db.Uuid
   name                  String
@@ -92,34 +106,71 @@ model Request {
 }
 
 model ExecutionPlan {
-  id        String              @id @default(uuid()) @db.Uuid
-  requestId String              @unique @db.Uuid
-  provider  PlannerProviderType
-  summary   String
-  status    PlanStatus          @default(GENERATED)
-  createdAt DateTime            @default(now())
-  updatedAt DateTime            @updatedAt
-  request   Request             @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  actions   PlanAction[]
+  id            String              @id @default(uuid()) @db.Uuid
+  requestId     String              @unique @db.Uuid
+  provider      PlannerProviderType
+  summary       String
+  status        PlanStatus          @default(GENERATED)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  request       Request             @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  actions       PlanAction[]
+  simulationRun SimulationRun?
 }
 
 model PlanAction {
-  id             String           @id @default(uuid()) @db.Uuid
-  planId         String           @db.Uuid
-  position       Int
-  type           PlanActionType
-  resourceType   PlanResourceType
-  description    String
-  target         Json
-  destructive    Boolean          @default(false)
-  reversible     Boolean          @default(true)
-  estimatedScope String?
-  reason         String
-  createdAt      DateTime         @default(now())
-  plan           ExecutionPlan    @relation(fields: [planId], references: [id], onDelete: Cascade)
+  id                String             @id @default(uuid()) @db.Uuid
+  planId            String             @db.Uuid
+  position          Int
+  type              PlanActionType
+  resourceType      PlanResourceType
+  description       String
+  target            Json
+  destructive       Boolean            @default(false)
+  reversible        Boolean            @default(true)
+  estimatedScope    String?
+  reason            String
+  createdAt         DateTime           @default(now())
+  plan              ExecutionPlan      @relation(fields: [planId], references: [id], onDelete: Cascade)
+  simulationEffects SimulationEffect[]
 
   @@unique([planId, position])
   @@index([planId])
+}
+
+model SimulationRun {
+  id                     String                 @id @default(uuid()) @db.Uuid
+  planId                 String                 @unique @db.Uuid
+  provider               SimulationProviderType
+  status                 SimulationStatus       @default(COMPLETED)
+  totalResourcesExamined Int
+  matchedResources       Int
+  affectedResources      Int
+  dependencyObservations Int
+  summary                String
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime               @updatedAt
+  plan                   ExecutionPlan          @relation(fields: [planId], references: [id], onDelete: Cascade)
+  effects                SimulationEffect[]
+}
+
+model SimulationEffect {
+  id              String               @id @default(uuid()) @db.Uuid
+  simulationRunId String               @db.Uuid
+  planActionId    String               @db.Uuid
+  resourceKey     String
+  resourceType    PlanResourceType
+  effectType      SimulationEffectType
+  beforeState     Json
+  afterState      Json
+  changed         Boolean              @default(true)
+  createdAt       DateTime             @default(now())
+  simulationRun   SimulationRun        @relation(fields: [simulationRunId], references: [id], onDelete: Cascade)
+  planAction      PlanAction           @relation(fields: [planActionId], references: [id], onDelete: Cascade)
+
+  @@unique([simulationRunId, planActionId, resourceKey])
+  @@index([simulationRunId])
+  @@index([planActionId])
 }
 
 model RoleRequest {
