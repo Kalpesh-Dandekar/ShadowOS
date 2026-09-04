@@ -1,0 +1,1 @@
+import{PersistedAuditScreen}from"../../../features/audit/persisted-audit-screen";export default async function Page({params}:{params:Promise<{requestId:string}>}){const{requestId}=await params;return <PersistedAuditScreen requestId={requestId}/>}

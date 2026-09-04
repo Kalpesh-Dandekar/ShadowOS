@@ -1,0 +1,6 @@
+import type { AuthUser } from "./auth";
+export type ExecutionStatus="PENDING"|"RUNNING"|"COMPLETED"|"FAILED"|"ROLLED_BACK";
+export type ExecutionActionResult={id:string;position:number;actionType:string;resourceType:string;status:string;matchedCount:number;affectedCount:number;reversible:boolean;summary:string;beforeJson:unknown;afterJson:unknown};
+export type RollbackRun={id:string;status:"RUNNING"|"COMPLETED"|"FAILED";summary:string;startedAt:string;completedAt:string|null;actor:AuthUser;actionResults:{id:string;position:number;status:string;restoredJson:unknown;summary:string}[]};
+export type ExecutionRun={id:string;requestId:string;planId:string;simulationRunId:string;riskAssessmentId:string;policyEvaluationId:string;approvalRequestId:string|null;provider:"SYNTHETIC";status:ExecutionStatus;summary:string;startedAt:string|null;completedAt:string|null;rolledBackAt:string|null;actor:AuthUser;request:{id:string;prompt:string;environment:string};policyEvaluation:{decision:string};approvalRequest:{id:string;status:string}|null;actionResults:ExecutionActionResult[];rollbackRun:RollbackRun|null};
+export type AuditEvent={id:string;eventType:string;sourceType:string;sourceId:string|null;message:string;metadataJson:unknown;createdAt:string;actor:AuthUser|null};

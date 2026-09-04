@@ -18,6 +18,7 @@
     "test:policy": "node --test --test-concurrency=1 tests/policy.integration.test.js",
     "test:approval": "node --test --test-concurrency=1 tests/approval.integration.test.js",
     "test:approval-scenario": "node --test --test-concurrency=1 tests/approval-scenario.integration.test.js",
+    "test:execution": "node --test --test-concurrency=1 tests/execution.integration.test.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:seed": "prisma db seed",

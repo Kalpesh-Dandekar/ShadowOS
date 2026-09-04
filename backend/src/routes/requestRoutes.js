@@ -17,6 +17,9 @@ import { emptySimulationBodySchema } from "../schemas/simulationSchemas.js";
 import { emptyRiskBodySchema } from "../schemas/riskSchemas.js";
 import { emptyPolicyBodySchema } from "../schemas/policySchemas.js";
 import { createApproval, getRequestApproval } from "../controllers/approvalController.js";
+import { execute, getRequestExecution } from "../controllers/executionController.js";
+import { getRequestAudit } from "../controllers/auditController.js";
+import { emptyExecutionBodySchema } from "../schemas/executionSchemas.js";
 
 export const requestRouter = Router();
 
@@ -33,4 +36,7 @@ requestRouter.post("/:id/policy", validateParams(requestParamsSchema), validate(
 requestRouter.get("/:id/policy", validateParams(requestParamsSchema), getPolicy);
 requestRouter.post("/:id/approval", validateParams(requestParamsSchema), validate(emptyPolicyBodySchema), createApproval);
 requestRouter.get("/:id/approval", validateParams(requestParamsSchema), getRequestApproval);
+requestRouter.post("/:id/execution", validateParams(requestParamsSchema), validate(emptyExecutionBodySchema), execute);
+requestRouter.get("/:id/execution", validateParams(requestParamsSchema), getRequestExecution);
+requestRouter.get("/:id/audit", validateParams(requestParamsSchema), getRequestAudit);
 requestRouter.get("/:id", validateParams(requestParamsSchema), getById);

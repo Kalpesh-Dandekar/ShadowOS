@@ -1,0 +1,1 @@
+import{PersistedExecutionScreen}from"../../../features/executions/persisted-execution-screen";export default async function Page({params}:{params:Promise<{requestId:string}>}){const{requestId}=await params;return <PersistedExecutionScreen requestId={requestId}/>}

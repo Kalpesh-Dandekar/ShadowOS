@@ -102,6 +102,39 @@ enum ApprovalStatus {
   REJECTED
 }
 
+enum ExecutionProviderType {
+  SYNTHETIC
+}
+
+enum ExecutionStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  ROLLED_BACK
+}
+
+enum ExecutionActionStatus {
+  COMPLETED
+  FAILED
+  ROLLED_BACK
+}
+
+enum AuditEventType {
+  EXECUTION_STARTED
+  EXECUTION_COMPLETED
+  EXECUTION_FAILED
+  ROLLBACK_STARTED
+  ROLLBACK_COMPLETED
+  ROLLBACK_FAILED
+}
+
+enum RollbackStatus {
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
 model User {
   id                    String            @id @default(uuid()) @db.Uuid
   name                  String
@@ -116,6 +149,9 @@ model User {
   requests              Request[]
   requestedApprovals    ApprovalRequest[] @relation("RequestedApprovals")
   reviewedApprovals     ApprovalRequest[] @relation("ReviewedApprovals")
+  executionRuns         ExecutionRun[]     @relation("ExecutionActors")
+  auditEvents           AuditEvent[]       @relation("AuditActors")
+  rollbackRuns          RollbackRun[]      @relation("RollbackActors")
 }
 
 model Request {
@@ -128,6 +164,8 @@ model Request {
   updatedAt     DateTime       @updatedAt
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   executionPlan ExecutionPlan?
+  executionRun  ExecutionRun?
+  auditEvents   AuditEvent[]
 
   @@index([userId, createdAt])
 }
@@ -143,6 +181,7 @@ model ExecutionPlan {
   request       Request             @relation(fields: [requestId], references: [id], onDelete: Cascade)
   actions       PlanAction[]
   simulationRun SimulationRun?
+  executionRun  ExecutionRun?
 }
 
 model PlanAction {
@@ -160,6 +199,7 @@ model PlanAction {
   createdAt         DateTime           @default(now())
   plan              ExecutionPlan      @relation(fields: [planId], references: [id], onDelete: Cascade)
   simulationEffects SimulationEffect[]
+  executionResults  ExecutionActionResult[]
 
   @@unique([planId, position])
   @@index([planId])
@@ -180,6 +220,7 @@ model SimulationRun {
   plan                   ExecutionPlan          @relation(fields: [planId], references: [id], onDelete: Cascade)
   effects                SimulationEffect[]
   riskAssessment         RiskAssessment?
+  executionRun           ExecutionRun?
 }
 
 model RiskAssessment {
@@ -193,6 +234,7 @@ model RiskAssessment {
   simulationRun    SimulationRun     @relation(fields: [simulationRunId], references: [id], onDelete: Cascade)
   factors          RiskFactor[]
   policyEvaluation PolicyEvaluation?
+  executionRun     ExecutionRun?
 }
 
 model PolicyEvaluation {
@@ -207,6 +249,7 @@ model PolicyEvaluation {
   riskAssessment     RiskAssessment   @relation(fields: [riskAssessmentId], references: [id], onDelete: Cascade)
   matches            PolicyMatch[]
   approvalRequest    ApprovalRequest?
+  executionRun       ExecutionRun?
 }
 
 model ApprovalRequest {
@@ -223,6 +266,7 @@ model ApprovalRequest {
   policyEvaluation   PolicyEvaluation @relation(fields: [policyEvaluationId], references: [id], onDelete: Cascade)
   requester          User             @relation("RequestedApprovals", fields: [requesterId], references: [id], onDelete: Cascade)
   reviewer           User?            @relation("ReviewedApprovals", fields: [reviewerId], references: [id], onDelete: SetNull)
+  executionRun       ExecutionRun?
 
   @@index([status, requestedAt])
   @@index([requesterId])
@@ -297,4 +341,111 @@ model RoleRequest {
 
   @@index([status, requestedRole])
   @@index([userId, status])
+}
+
+model ExecutionRun {
+  id                 String                @id @default(uuid()) @db.Uuid
+  requestId          String                @unique @db.Uuid
+  planId             String                @unique @db.Uuid
+  simulationRunId    String                @unique @db.Uuid
+  riskAssessmentId   String                @unique @db.Uuid
+  policyEvaluationId String                @unique @db.Uuid
+  approvalRequestId  String?               @unique @db.Uuid
+  actorUserId        String                @db.Uuid
+  provider           ExecutionProviderType @default(SYNTHETIC)
+  status             ExecutionStatus       @default(PENDING)
+  summary            String
+  startedAt          DateTime?
+  completedAt        DateTime?
+  failedAt           DateTime?
+  rolledBackAt       DateTime?
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+  request            Request               @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  plan               ExecutionPlan         @relation(fields: [planId], references: [id], onDelete: Cascade)
+  simulationRun      SimulationRun          @relation(fields: [simulationRunId], references: [id], onDelete: Cascade)
+  riskAssessment     RiskAssessment         @relation(fields: [riskAssessmentId], references: [id], onDelete: Cascade)
+  policyEvaluation   PolicyEvaluation       @relation(fields: [policyEvaluationId], references: [id], onDelete: Cascade)
+  approvalRequest    ApprovalRequest?       @relation(fields: [approvalRequestId], references: [id], onDelete: SetNull)
+  actor              User                   @relation("ExecutionActors", fields: [actorUserId], references: [id], onDelete: Restrict)
+  actionResults      ExecutionActionResult[]
+  rollbackRun        RollbackRun?
+
+  @@index([actorUserId, createdAt])
+  @@index([status])
+}
+
+model ExecutionActionResult {
+  id             String                @id @default(uuid()) @db.Uuid
+  executionRunId String                @db.Uuid
+  planActionId   String                @db.Uuid
+  position       Int
+  actionType     PlanActionType
+  resourceType   PlanResourceType
+  status         ExecutionActionStatus @default(COMPLETED)
+  matchedCount   Int
+  affectedCount  Int
+  reversible     Boolean
+  summary        String
+  beforeJson     Json
+  afterJson      Json
+  createdAt      DateTime              @default(now())
+  executionRun   ExecutionRun          @relation(fields: [executionRunId], references: [id], onDelete: Cascade)
+  planAction     PlanAction             @relation(fields: [planActionId], references: [id], onDelete: Restrict)
+  rollbackResults RollbackActionResult[]
+
+  @@unique([executionRunId, planActionId])
+  @@unique([executionRunId, position])
+  @@index([planActionId])
+}
+
+model AuditEvent {
+  id          String         @id @default(uuid()) @db.Uuid
+  requestId   String         @db.Uuid
+  actorUserId String?        @db.Uuid
+  eventType   AuditEventType
+  sourceType  String
+  sourceId    String?        @db.Uuid
+  message     String
+  metadataJson Json?
+  createdAt   DateTime       @default(now())
+  request     Request        @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  actor       User?          @relation("AuditActors", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([requestId, createdAt])
+  @@index([eventType, createdAt])
+}
+
+model RollbackRun {
+  id             String         @id @default(uuid()) @db.Uuid
+  executionRunId String         @unique @db.Uuid
+  actorUserId    String         @db.Uuid
+  status         RollbackStatus @default(RUNNING)
+  summary        String
+  startedAt      DateTime       @default(now())
+  completedAt    DateTime?
+  failedAt       DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  executionRun   ExecutionRun   @relation(fields: [executionRunId], references: [id], onDelete: Cascade)
+  actor          User           @relation("RollbackActors", fields: [actorUserId], references: [id], onDelete: Restrict)
+  actionResults  RollbackActionResult[]
+
+  @@index([actorUserId, createdAt])
+}
+
+model RollbackActionResult {
+  id                      String                @id @default(uuid()) @db.Uuid
+  rollbackRunId           String                @db.Uuid
+  executionActionResultId String                @db.Uuid
+  position                Int
+  status                  ExecutionActionStatus @default(ROLLED_BACK)
+  restoredJson            Json
+  summary                 String
+  createdAt               DateTime              @default(now())
+  rollbackRun             RollbackRun           @relation(fields: [rollbackRunId], references: [id], onDelete: Cascade)
+  executionActionResult   ExecutionActionResult @relation(fields: [executionActionResultId], references: [id], onDelete: Restrict)
+
+  @@unique([rollbackRunId, executionActionResultId])
+  @@unique([rollbackRunId, position])
 }
