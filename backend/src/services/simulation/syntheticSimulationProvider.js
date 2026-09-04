@@ -9,6 +9,7 @@ function selectResources(resourceType, target) {
     return resources.filter((resource) => resource.status === target.status && (!target.before || resource.createdAt < target.before));
   }
   if (resourceType === "CUSTOMER_ACCOUNT") {
+    if (target.selection === "all_inactive") return resources.filter((resource) => resource.status === "inactive" && !resource.archived);
     const referenceYear = Number(SYNTHETIC_REFERENCE_DATE.slice(0, 4));
     const threshold = `${referenceYear - Number(target.olderThanYears || 0)}-01-01`;
     return resources.filter((resource) => resource.status === target.status && !resource.archived && resource.inactiveSince && resource.inactiveSince < threshold);

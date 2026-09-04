@@ -96,18 +96,26 @@ enum PolicyDecision {
   BLOCK
 }
 
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
-  id                    String        @id @default(uuid()) @db.Uuid
+  id                    String            @id @default(uuid()) @db.Uuid
   name                  String
-  email                 String        @unique
+  email                 String            @unique
   passwordHash          String
-  role                  Role          @default(EMPLOYEE)
-  status                UserStatus    @default(ACTIVE)
-  createdAt             DateTime      @default(now())
-  updatedAt             DateTime      @updatedAt
-  submittedRoleRequests RoleRequest[] @relation("SubmittedRoleRequests")
-  reviewedRoleRequests  RoleRequest[] @relation("ReviewedRoleRequests")
+  role                  Role              @default(EMPLOYEE)
+  status                UserStatus        @default(ACTIVE)
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+  submittedRoleRequests RoleRequest[]     @relation("SubmittedRoleRequests")
+  reviewedRoleRequests  RoleRequest[]     @relation("ReviewedRoleRequests")
   requests              Request[]
+  requestedApprovals    ApprovalRequest[] @relation("RequestedApprovals")
+  reviewedApprovals     ApprovalRequest[] @relation("ReviewedApprovals")
 }
 
 model Request {
@@ -188,16 +196,37 @@ model RiskAssessment {
 }
 
 model PolicyEvaluation {
-  id                 String         @id @default(uuid()) @db.Uuid
-  riskAssessmentId   String         @unique @db.Uuid
+  id                 String           @id @default(uuid()) @db.Uuid
+  riskAssessmentId   String           @unique @db.Uuid
   decision           PolicyDecision
   summary            String
   evaluatedRuleCount Int
   matchedRuleCount   Int
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
-  riskAssessment     RiskAssessment @relation(fields: [riskAssessmentId], references: [id], onDelete: Cascade)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  riskAssessment     RiskAssessment   @relation(fields: [riskAssessmentId], references: [id], onDelete: Cascade)
   matches            PolicyMatch[]
+  approvalRequest    ApprovalRequest?
+}
+
+model ApprovalRequest {
+  id                 String           @id @default(uuid()) @db.Uuid
+  policyEvaluationId String           @unique @db.Uuid
+  requesterId        String           @db.Uuid
+  reviewerId         String?          @db.Uuid
+  status             ApprovalStatus   @default(PENDING)
+  reviewComment      String?
+  requestedAt        DateTime         @default(now())
+  decidedAt          DateTime?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  policyEvaluation   PolicyEvaluation @relation(fields: [policyEvaluationId], references: [id], onDelete: Cascade)
+  requester          User             @relation("RequestedApprovals", fields: [requesterId], references: [id], onDelete: Cascade)
+  reviewer           User?            @relation("ReviewedApprovals", fields: [reviewerId], references: [id], onDelete: SetNull)
+
+  @@index([status, requestedAt])
+  @@index([requesterId])
+  @@index([reviewerId])
 }
 
 model PolicyMatch {

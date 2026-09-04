@@ -23,6 +23,7 @@ function invoiceAgeTarget(prompt) {
 }
 
 function inactiveAccountTarget(prompt) {
+  if (/\ball\s+inactive\s+customer\s+accounts?\b/i.test(prompt)) return { status: "inactive", selection: "all_inactive" };
   const match = prompt.match(/older than\s+(\d+)\s+years?/i);
   return { status: "inactive", ...(match ? { olderThanYears: Number(match[1]) } : { ageRule: "older_than_requested_threshold" }) };
 }

@@ -1,0 +1,12 @@
+import { Role } from "@prisma/client";
+import { Router } from "express";
+import { approve, getApproval, list, reject } from "../controllers/approvalController.js";
+import { authenticate } from "../middleware/authenticate.js";
+import { authorize } from "../middleware/authorize.js";
+import { validate, validateParams, validateQuery } from "../middleware/validate.js";
+import { approvalDecisionSchema, approvalParamsSchema, approvalQuerySchema } from "../schemas/approvalSchemas.js";
+export const approvalRouter = Router(); approvalRouter.use(authenticate);
+approvalRouter.get("/", authorize(Role.MANAGER, Role.ADMIN), validateQuery(approvalQuerySchema), list);
+approvalRouter.get("/:approvalId", validateParams(approvalParamsSchema), getApproval);
+approvalRouter.post("/:approvalId/approve", authorize(Role.MANAGER, Role.ADMIN), validateParams(approvalParamsSchema), validate(approvalDecisionSchema), approve);
+approvalRouter.post("/:approvalId/reject", authorize(Role.MANAGER, Role.ADMIN), validateParams(approvalParamsSchema), validate(approvalDecisionSchema), reject);

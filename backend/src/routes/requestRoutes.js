@@ -16,6 +16,7 @@ import { emptyPlanBodySchema } from "../schemas/planSchemas.js";
 import { emptySimulationBodySchema } from "../schemas/simulationSchemas.js";
 import { emptyRiskBodySchema } from "../schemas/riskSchemas.js";
 import { emptyPolicyBodySchema } from "../schemas/policySchemas.js";
+import { createApproval, getRequestApproval } from "../controllers/approvalController.js";
 
 export const requestRouter = Router();
 
@@ -30,4 +31,6 @@ requestRouter.post("/:id/risk", validateParams(requestParamsSchema), validate(em
 requestRouter.get("/:id/risk", validateParams(requestParamsSchema), getRisk);
 requestRouter.post("/:id/policy", validateParams(requestParamsSchema), validate(emptyPolicyBodySchema), evaluatePolicy);
 requestRouter.get("/:id/policy", validateParams(requestParamsSchema), getPolicy);
+requestRouter.post("/:id/approval", validateParams(requestParamsSchema), validate(emptyPolicyBodySchema), createApproval);
+requestRouter.get("/:id/approval", validateParams(requestParamsSchema), getRequestApproval);
 requestRouter.get("/:id", validateParams(requestParamsSchema), getById);

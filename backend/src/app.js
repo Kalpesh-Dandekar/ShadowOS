@@ -10,6 +10,7 @@ import { healthRouter } from "./routes/healthRoutes.js";
 import { rbacRouter } from "./routes/rbacRoutes.js";
 import { requestRouter } from "./routes/requestRoutes.js";
 import { roleRequestRouter } from "./routes/roleRequestRoutes.js";
+import { approvalRouter } from "./routes/approvalRoutes.js";
 
 export const app = express();
 
@@ -27,6 +28,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/rbac", rbacRouter);
 app.use("/api/requests", requestRouter);
 app.use("/api/role-requests", roleRequestRouter);
+app.use("/api/approvals", approvalRouter);
 
 app.use(notFound);
 app.use(errorHandler);
